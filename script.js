@@ -4,9 +4,13 @@ const clearBtns = document.querySelectorAll('.clear-btn');
 const decimalBtn = document.getElementById('decimal');
 const result = document.getElementById('result');
 const display = document.getElementById('display');
+const sqrtBtn = document.getElementById('sqrt');
+const negposBtn = document.getElementById('negpos');
 let MemoryCurrentNumber = 0;
 let MemoryNewNumber = false;
 let MemoryPendingOperation = '';
+let NumberSign = false;
+let SqRoot = false;
 
 for (var i = 0; i < numbers.length; i++) {
   var number = numbers[i];
@@ -30,6 +34,8 @@ for (var i = 0; i < clearBtns.length; i++) {
 }
 
 decimalBtn.addEventListener('click', decimal);
+sqrtBtn.addEventListener('click', sqrt);
+negposBtn.addEventListener('click', negpos);
 
 function numberPress(number) {
   if (MemoryNewNumber) {
@@ -59,12 +65,41 @@ function operationPress(op) {
       MemoryCurrentNumber *= +localOperationMemory;
     } else if (MemoryPendingOperation === '/') {
       MemoryCurrentNumber /= +localOperationMemory;
-    } else {
+    } else if (MemoryPendingOperation === 'x^y') {
+      MemoryCurrentNumber = Math.pow(MemoryCurrentNumber, localOperationMemory);
+    } 
+    else {
       MemoryCurrentNumber = +localOperationMemory;
     }
     display.value = MemoryCurrentNumber;
     MemoryPendingOperation = op;
   }
+}
+
+function sqrt(id) {
+ display.value = Math.sqrt(display.value);
+  MemoryCurrentNumber= display.value;
+  MemoryNewNumber = true;
+}
+
+function negpos(id) {
+  let localNegposMemory = display.value;
+  if (MemoryNewNumber) {
+    localNegposMemory = '-';
+  }
+  else {
+  if (NumberSign) {
+    localNegposMemory.splice(0, 1);
+    NumberSign = false;
+    }
+  else {
+    localNegposMemory = '-'.concat(localNegposMemory);
+    NumberSign = true;
+  }
+  
+}MemoryNewNumber = false;
+  display.value = localNegposMemory;
+
 }
 
 function decimal(argument) {
@@ -92,3 +127,4 @@ function clear(id) {
     MemoryPendingOperation = '';
   }
 }
+
